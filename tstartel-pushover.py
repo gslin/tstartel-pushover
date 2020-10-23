@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 import configparser
-import mechanicalsoup
 import os
-import re
 import requests
+import selenium
+import selenium.webdriver.chrome.options
+import time
 
 def work():
     home = os.environ['HOME']
@@ -18,29 +19,39 @@ def work():
     pushover_user_token = c['default']['pushover_user_token']
     username = c['default']['username']
 
-    b = mechanicalsoup.StatefulBrowser()
+    chrome_options = selenium.webdriver.chrome.options.Options()
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--headless')
+    chrome_options.binary_location = '/usr/bin/chromium-browser'
 
-    url = 'https://sso.tstartel.com/mc-ws/MC/MCLogin.action?sid=mytstar&ru=https://sso.tstartel.com/MyTstar/MyDashboard.action&cid=001,009,025,026'
-    b.open(url)
+    with selenium.webdriver.Chrome(options=chrome_options) as b:
+        url = 'https://www.tstartel.com/CWS/Dashboard_index.php'
+        b.get(url)
 
-    f = b.select_form('#form1')
-    f.set('msisdn', username)
-    f.set('password', password)
-    b.submit_selected()
+        i = b.find_element_by_css_selector('#ml_mbrid')
+        i.send_keys(username)
 
-    url = 'https://sso.tstartel.com/MyTstar/normal/MyDashboard.action'
-    b.open(url)
+        btn = b.find_element_by_css_selector('.btn_primary.next')
+        btn.click()
 
-    text = b.get_current_page().select('.user-static li')[0].text.strip()
-    text = re.sub(r'\s+', ' ', text, flags=re.DOTALL)
+        p = b.find_element_by_css_selector('#ml_mbrpw')
+        p.send_keys('')
+        p.send_keys(password)
 
-    text = '{} 的用量：\n'.format(username) + text
+        btn = b.find_element_by_css_selector('#secret .btn_primary.next')
+        btn.click()
 
-    requests.post('https://api.pushover.net/1/messages.json', data={
-        'token': pushover_api_token,
-        'user': pushover_user_token,
-        'message': text,
-    })
+        # Workaround to wait page rendering.
+        time.sleep(10)
+
+        text = b.execute_script('return document.querySelector(".use-status").innerText;')
+        text = '{} 的用量：\n'.format(username) + text
+
+        requests.post('https://api.pushover.net/1/messages.json', data={
+            'token': pushover_api_token,
+            'user': pushover_user_token,
+            'message': text,
+        })
 
 if '__main__' == __name__:
     work()
