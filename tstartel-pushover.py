@@ -42,7 +42,7 @@ def work():
         btn.click()
 
         # Workaround to wait page rendering.
-        time.sleep(10)
+        time.sleep(30)
 
         text = b.execute_script('return document.querySelector(".use-status").innerText;')
         text = '{} 的用量：\n'.format(username) + text
