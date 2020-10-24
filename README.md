@@ -2,7 +2,7 @@
 
 Access T STAR's mobile data usage from emome and send it to pushover.
 
-# Pre-installation
+## Pre-installation
 
 Install these packages first:
 
