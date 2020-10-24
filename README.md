@@ -18,7 +18,7 @@ And create symbolic link for chromedriver:
 `~/.config/tstartel-pushover`:
 
     [default]
-    password = lowercase_md5_of_your_password
+    password = password
     pushover_api_token = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     pushover_user_token = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
     username = 0900000000
