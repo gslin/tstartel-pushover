@@ -5,7 +5,19 @@ import os
 import requests
 import selenium
 import selenium.webdriver.chrome.options
+import sentry_sdk
 import time
+
+def init_sentry():
+    home = os.environ['HOME']
+    f_conf = '{}/.config/tstartel-pushover/config.ini'.format(home)
+
+    c = configparser.ConfigParser()
+    c.read(f_conf)
+
+    sentry_url = c['default']['sentry_url']
+
+    sentry_sdk.init(sentry_url, traces_sample_rate=1.0)
 
 def work():
     home = os.environ['HOME']
@@ -17,7 +29,10 @@ def work():
     password = c['default']['password']
     pushover_api_token = c['default']['pushover_api_token']
     pushover_user_token = c['default']['pushover_user_token']
+    sentry_url = c['default']['sentry_url']
     username = c['default']['username']
+
+    sentry_sdk.init(sentry_url, traces_sample_rate=1.0)
 
     chrome_options = selenium.webdriver.chrome.options.Options()
     chrome_options.add_argument('--disable-gpu')
@@ -54,4 +69,5 @@ def work():
         })
 
 if '__main__' == __name__:
+    init_sentry()
     work()
