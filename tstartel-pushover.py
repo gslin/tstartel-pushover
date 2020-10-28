@@ -45,11 +45,17 @@ class Job(object):
             url = 'https://www.tstartel.com/CWS/Dashboard_index.php'
             b.get(url)
 
+            # Workaround to wait page rendering.
+            time.sleep(10)
+
             i = b.find_element_by_css_selector('#ml_mbrid')
             i.send_keys(username)
 
             btn = b.find_element_by_css_selector('.btn_primary.next')
             btn.click()
+
+            # Workaround to wait page rendering.
+            time.sleep(10)
 
             p = b.find_element_by_css_selector('#ml_mbrpw')
             p.send_keys('')
@@ -59,7 +65,7 @@ class Job(object):
             btn.click()
 
             # Workaround to wait page rendering.
-            time.sleep(30)
+            time.sleep(10)
 
             text = b.execute_script('return document.querySelector(".use-status").innerText;')
             text = '{} 的用量：\n'.format(username) + text
