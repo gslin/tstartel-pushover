@@ -4,7 +4,7 @@ import configparser
 import os
 import requests
 import selenium
-import selenium.webdriver.chrome.options
+import selenium.webdriver
 import sentry_sdk
 import time
 
@@ -36,12 +36,10 @@ class Job(object):
 
         sentry_sdk.init(sentry_url, traces_sample_rate=1.0)
 
-        chrome_options = selenium.webdriver.chrome.options.Options()
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--headless')
-        chrome_options.binary_location = '/usr/bin/chromium-browser'
+        options = selenium.webdriver.FirefoxOptions()
+        options.add_argument('--headless')
 
-        with selenium.webdriver.Chrome(options=chrome_options) as b:
+        with selenium.webdriver.Firefox(options=options) as b:
             url = 'https://www.tstartel.com/CWS/Dashboard_index.php'
             b.get(url)
 

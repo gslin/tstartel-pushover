@@ -6,12 +6,8 @@ Access T STAR's mobile data usage from emome and send it to pushover.
 
 Install these packages first:
 
-* chromium-browser
-* chromium-chromedriver
-
-And create symbolic link for chromedriver:
-
-    sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
+* firefox
+* firefox-geckodriver
 
 ## Setup
 
